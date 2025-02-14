@@ -227,97 +227,179 @@
 
 // export default AdminDashboard;
 
-import React, { useEffect, useState } from "react";
+import React from "react";
 import "./admindashboard.css";
-import axios from "axios";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faBuilding, faUsers } from "@fortawesome/free-solid-svg-icons";
 import { CircularProgressbar, buildStyles } from "react-circular-progressbar";
 import "react-circular-progressbar/dist/styles.css";
+import "react-circular-progressbar/dist/styles.css";
+import { BarChart, Bar, XAxis, YAxis, Tooltip, Legend, CartesianGrid, ResponsiveContainer, PieChart, Pie, Cell } from "recharts";
 
 const AdminDashboard = () => {
-  const [data, setData] = useState(null); // Data starts as null
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  // Local data array for clients and users
+  const data = [
+    { label: "Total Clients", value: 500, icon: faBuilding },
+    { label: "Active Clients", value: 350, icon: faBuilding },
+    { label: "Total Users", value: 1000, icon: faUsers },
+    { label: "Active Users", value: 750, icon: faUsers },
+  ];
 
-  useEffect(() => {
-    const res = axios.get("http://localhost:5000/api/company") // Ensure the backend is running
-      .then((response) => {
-        setData(response.data);
-        console.log("res", response.data);
+  // Revenue data for bar chart
+  const revenueData = [
+    { month: "Jan", revenue: 5000 },
+    { month: "Feb", revenue: 7000 },
+    { month: "Mar", revenue: 8000 },
+    { month: "Apr", revenue: 6500 },
+    { month: "May", revenue: 9000 },
+  ];
 
-        setLoading(false);
-      })
-      .catch((error) => {
-        console.error("Error fetching data:", error);
-        setError("Failed to fetch data");
-        setLoading(false);
-      });
-  }, []);
+  const subscriptionData = [
+    { month: "Jan", newSubs: 500, cancellations: 200 },
+    { month: "Feb", newSubs: 700, cancellations: 300 },
+    { month: "Mar", newSubs: 800, cancellations: 250 },
+    { month: "Apr", newSubs: 650, cancellations: 400 },
+    { month: "May", newSubs: 900, cancellations: 350 },
+  ];
 
-  if (loading) return <p>Loading...</p>;
-  if (error) return <p style={{ color: "red" }}>{error}</p>;
+  const subscriptionDataBar = [
+    { name: "Basic", value: 40, color: "#4CAF50" },  // Green
+    { name: "Standard", value: 30, color: "#FFC107" }, // Yellow
+    { name: "Premium", value: 20, color: "#F44336" }  // Red
+  ];
 
-  // ✅ Add a null check before rendering data
-  if (!data) return <p>No data available</p>;
+  const transactions = [
+    { id: "1", name: "John Doe", date: "2024-02-13", plan: "Basic", price: "$10" },
+    { id: "2", name: "Jane Smith", date: "2024-02-12", plan: "Premium", price: "$50" },
+    { id: "3", name: "Alice Johnson", date: "2024-02-11", plan: "Standard", price: "$30" },
+    { id: "4", name: "Robert Brown", date: "2024-02-10", plan: "Basic", price: "$10" },
+    { id: "5", name: "Emily Davis", date: "2024-02-09", plan: "Premium", price: "$50" }
+  ];
+
+  const subscriptions = [
+    { id: 1, client: "John Doe", date: "2024-02-10", plan: "Premium", price: "$49.99", status: "Expired" },
+    { id: 2, client: "Alice Smith", date: "2024-02-11", plan: "Basic", price: "$19.99", status: "Renewed" },
+    { id: 3, client: "David Johnson", date: "2024-02-12", plan: "Standard", price: "$29.99", status: "Expired" },
+    { id: 4, client: "Emily Brown", date: "2024-02-13", plan: "Premium", price: "$49.99", status: "Renewed" },
+  ];
 
   return (
-    <>
-    <div className="dashboard-graphs">
-    <div className="block-data">
-      <div>
-        <h5>Total Opportunities</h5>
-        <p>{data.company}</p>
-        <p>{data?.opportunities?.total || 0}</p>
-      </div>
-      <div className="bar-progress">
-        <div style={{ width: 150, height: 150 }}>
-          <CircularProgressbar
-            value={data?.opportunities?.progress || 0} // Prevent undefined errors
-            text={`${data?.opportunities?.progress || 0}%`}
-            styles={buildStyles({
-              textColor: "#3e98c7",
-              pathColor: "#3e98c7",
-              trailColor: "#d6d6d6",
-            })}
-            />
-        </div>
-        <div className="bar-data">
-          <p>Cold Leads: {data?.opportunities?.leads?.cold || 0}</p>
-          <p>Warm Leads: {data?.opportunities?.leads?.warm || 0}</p>
-          <p>Hot Leads: {data?.opportunities?.leads?.hot || 0}</p>
-        </div>
-      </div>
-    </div>
-    <div className="block-data">
-      <div>
-        <h5>Total Sales</h5>
-        <p>{data.company}</p>
-        <p>{data?.sales?.total_revenue || 0}</p>
-      </div>
-      <div className="bar-progress">
-        <div style={{ width: 150, height: 150 }}>
-          <CircularProgressbar
-            value={data?.opportunities?.progress || 0} // Prevent undefined errors
-            text={`${data?.opportunities?.progress || 0}%`}
-            styles={buildStyles({
-              textColor: "#3e98c7",
-              pathColor: "#3e98c7",
-              trailColor: "#d6d6d6",
-            })}
-            />
-        </div>
-        <div className="bar-data">
-          <p> Leads: {data?.opportunities?.leads?.cold || 0}</p>
-          <p>Warm Leads: {data?.opportunities?.leads?.warm || 0}</p>
-          <p>Hot Leads: {data?.opportunities?.leads?.hot || 0}</p>
-        </div>
-      </div>
-    </div>
+    <div className="dashboard">
+      {/* Client and User Data Blocks */}
+      <div className="dashboard-graphs">
+        {data.map((item, index) => (
+          <div className="block-data" key={index}>
+            <FontAwesomeIcon icon={item.icon} className="icon-client" />
+            <h3>{item.label}</h3>
+            <div className="bar-progress">
+              <h5>{((item.value / (data[0].value || 1)) * 100).toFixed(1)}%</h5>
+              <p>{item.value}</p>
             </div>
-            </>
+          </div>
+        ))}
+      </div>
+
+      {/* Revenue Bar Chart */}
+      <div className="revenue-subCancel">
+        <div className="revenue-chart">
+          <h3>Monthly Revenue</h3>
+          <div className="chart-container">
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart data={revenueData}>
+                <XAxis dataKey="month" className="axis-label" />
+                <YAxis className="axis-label" />
+                <Tooltip className="tooltip-style" />
+                <Bar dataKey="revenue" fill="#3e98c7" barSize={50} />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
+        <div className="subscription-chart">
+          <h3>New Subscriptions vs Cancellations</h3>
+          <ResponsiveContainer width="100%" height={300}>
+            <BarChart data={subscriptionData}>
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis dataKey="month" />
+              <YAxis />
+              <Tooltip />
+              <Legend />
+              <Bar dataKey="newSubs" fill="#4CAF50" name="New Subscriptions" barSize={50} />
+              <Bar dataKey="cancellations" fill="#F44336" name="Cancellations" barSize={50} />
+            </BarChart>
+          </ResponsiveContainer>
+        </div>
+      </div>
+      <div className="admin-sub-recent">
+        <div className="top-subscription-chart">
+          <h3>Most Purchased Subscription Plans</h3>
+          <PieChart width={300} height={300}>
+            <Pie
+              data={subscriptionDataBar}
+              cx="50%"
+              cy="50%"
+              innerRadius={70} // Creates a circular progress effect
+              outerRadius={100}
+              fill="#8884d8"
+              paddingAngle={3}
+              dataKey="value"
+            >
+              {subscriptionDataBar.map((entry, index) => (
+                <Cell key={`cell-${index}`} fill={entry.color} />
+              ))}
+            </Pie>
+            <Tooltip />
+            <Legend />
+          </PieChart>
+        </div>
+        <div className="transaction-table">
+          <div className="recent-transHead">
+            <h3>Recent Transactions</h3>
+            <button>View All</button>
+          </div>
+          <hr style={{ "marginBottom": "0" }} />
+          <div>
+            {transactions.map((transaction, idx) => (
+              <>
+                <div className="recent-transaction">
+                  <p>{transaction.id}</p>
+                  <div className="trans-name-date">
+                    <h5>{transaction.name}</h5>
+                    <p>{transaction.date}</p>
+                  </div>
+                  <div className="trans-plan-price">
+                    <p>{transaction.plan}</p>
+                    <p>{transaction.price}</p>
+                  </div>
+                </div>
+              </>
+            ))}
+          </div>
+        </div>
+      </div>
+      <div className="subscription-container">
+        <h3>Subscription Expirations & Renewals</h3>
+        {subscriptions.map((sub) => (
+          <div className={`subscription-entry ${sub.status.toLowerCase()}`} key={sub.id}>
+            <p>{sub.id}</p>
+            <div className="client-info">
+              <h5>{sub.client}</h5>
+              <p>{sub.date}</p>
+            </div>
+            <div className="plan-details">
+              <p>{sub.plan}</p>
+              <p>{sub.price}</p>
+            </div>
+            <span className={`status-badge ${sub.status.toLowerCase()}`}>{sub.status}</span>
+          </div>
+        ))}
+      </div>
+    </div>
   );
 };
 
 export default AdminDashboard;
+
+
 
 // import React, { useState, useEffect } from "react";
 // import axios from "axios";

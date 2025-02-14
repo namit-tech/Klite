@@ -21,6 +21,18 @@ const sidebarConfig = {
         { name: "Users", path: "/users" },
       ],
     },
+    { name: "Subscriptions", path: "/chatbox", icon: faCog },
+    { name: "Billings", path: "/chatbox", icon: faCog },
+    { name: "Feature and Usage Analytics", path: "/chatbox", icon: faCog },
+    { name: "Support Tickets", path: "/chatbox", icon: faCog },
+    { name: "Security", path: "/chatbox", icon: faCog },
+    { name: "Settings", path: "/chatbox", icon: faCog },
+    { name: "Admin Manager", path: "/chatbox", icon: faCog },
+    { name: "Notification", path: "/chatbox", icon: faCog },
+  ],
+  client: [
+    { name: "Dashboard", path: "/dashboard", icon: faTachometerAlt },
+    { name: "Permissions", path: "/permissions", icon: faCog },
     {
       name: "CRM", path: "/crm", icon: faCog, options: [
         { name: "Contacts", path: "/crm/contacts" },
@@ -37,13 +49,6 @@ const sidebarConfig = {
         { name: "Analytics", path: "/clients" },
       ],
     },
-    { name: "Chats", path: "/chatbox", icon: faCog },
-    { name: "Settings", path: "/settings", icon: faCog },
-
-  ],
-  client: [
-    { name: "Dashboard", path: "/dashboard", icon: faTachometerAlt },
-    { name: "Permissions", path: "/permissions", icon: faCog },
     { name: "Calendar", path: "/calendar", icon: faChartBar },
     {
       name: "Manage User",

@@ -25,6 +25,7 @@
     "react-qr-scanner": "^1.0.0-alpha.11",
     "react-quill": "^2.0.0",
     "react-router-dom": "^7.1.5",
+    "recharts": "^2.15.1",
     "socket.io-client": "^4.8.1",
     "web-vitals": "^4.2.4",
     "xlsx": "^0.18.5"

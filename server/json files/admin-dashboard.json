@@ -1,31 +1,8 @@
 {
-    "company": "Tech Solutions Ltd",
-    "opportunities": {
-      "total": 48,
-      "leads": {
-        "cold": 20,
-        "warm": 18,
-        "hot": 10
-      },
-      "progress": 70
-    },
-    "sales": {
-      "total_revenue": 150000,
-      "monthly_sales": [
-        { "month": "January", "revenue": 12000 },
-        { "month": "February", "revenue": 14000 },
-        { "month": "March", "revenue": 18000 },
-        { "month": "April", "revenue": 20000 },
-        { "month": "May", "revenue": 16000 },
-        { "month": "June", "revenue": 17000 },
-        { "month": "July", "revenue": 19000 },
-        { "month": "August", "revenue": 22000 },
-        { "month": "September", "revenue": 21000 },
-        { "month": "October", "revenue": 25000 },
-        { "month": "November", "revenue": 24000 },
-        { "month": "December", "revenue": 26000 }
-      ],
-      "sales_growth_percentage": 15
-    }
-  }
-  
+  "total_company": "Tech Solutions Ltd",
+  "progress": 70
+}
+{
+  "company": "Klit Solutions Ltd",
+  "progress": 70
+}
