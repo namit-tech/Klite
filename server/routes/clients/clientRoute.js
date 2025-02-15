@@ -1,37 +1,46 @@
 const express = require("express");
 const router = express.Router();
-const Client = require("../models/client-modal");
+const Client = require("../../models/clients/client-modal");
 const bcrypt = require("bcryptjs");
-const { verifyToken } = require("../middlewares/auth");
+const { verifyToken } = require("../../middlewares/auth");
 
-router.post("/add", async (req, res) => {
+router.post("/register", async (req, res) => {
   try {
-    const { name, status, role, createdAt, email, password, mobileNumber } =
+    const { fullName,
+      email,
+      phone,
+      companyName,
+      companyWebsite,
+      industryType,
+      selectedPlan,
+      password, } =
       req.body;
 
     // Hash the password
     const hashedPassword = await bcrypt.hash(password, 10); // 10 is the salt rounds
 
     const newClient = new Client({
-      name,
-      status,
-      role,
-      createdAt,
+      fullName,
       email,
+      phone,
+      companyName,
+      companyWebsite,
+      industryType,
+      selectedPlan,
       password: hashedPassword, // Save hashed password
-      mobileNumber,
     });
 
     await newClient.save();
     res
       .status(201)
-      .json({ message: "Client added successfully", client: newClient });
+      .json({ message: "User added successfully", client: newClient });
   } catch (error) {
     res
       .status(500)
-      .json({ error: "Error adding client", details: error.message });
+      .json({ error: "Error adding user", details: error.message });
   }
 });
+
 
 router.get("/clientData/:email", async (req, res) => {
   try {

@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
-const { db2 } = require("../database/db");
+const { db2 } = require("../../database/db");
 
-const userSchema = new mongoose.Schema(
+const clientSchema = new mongoose.Schema(
   {
     fullName: { type: String, required: true }, // Corrected from 'fullname'
     email: {
@@ -32,6 +32,6 @@ const userSchema = new mongoose.Schema(
   },
   { timestamps: true }
 );
-const User = db2.model("User", userSchema);
+const Client = db2.model("Clients", clientSchema);
 
-module.exports = User;
+module.exports = Client;

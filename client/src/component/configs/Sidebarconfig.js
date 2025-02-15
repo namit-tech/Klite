@@ -13,7 +13,7 @@ const sidebarConfig = {
   admin: [
     { name: "Dashboard", path: "/dashboard", icon: faTachometerAlt },
     {
-      name: "Manage User",
+      name: "Manage Users",
       path: "/users",
       icon: faUsers,
       options: [
@@ -21,13 +21,13 @@ const sidebarConfig = {
         { name: "Users", path: "/users" },
       ],
     },
-    { name: "Subscriptions", path: "/chatbox", icon: faCog },
-    { name: "Billings", path: "/chatbox", icon: faCog },
-    { name: "Feature and Usage Analytics", path: "/chatbox", icon: faCog },
-    { name: "Support Tickets", path: "/chatbox", icon: faCog },
-    { name: "Security", path: "/chatbox", icon: faCog },
-    { name: "Settings", path: "/chatbox", icon: faCog },
-    { name: "Admin Manager", path: "/chatbox", icon: faCog },
+    { name: "Subscriptions", path: "/subscriptions", icon: faCog },
+    { name: "Billings", path: "/billings", icon: faCog },
+    { name: "System Analytics", path: "/systemanalytics", icon: faCog },
+    { name: "Support Tickets", path: "/supporttickets", icon: faCog },
+    { name: "Security", path: "/security", icon: faCog },
+    { name: "Settings", path: "/settings", icon: faCog },
+    { name: "System Health", path: "/performance", icon: faCog },
     { name: "Notification", path: "/chatbox", icon: faCog },
   ],
   client: [

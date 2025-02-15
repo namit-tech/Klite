@@ -227,14 +227,13 @@
 
 // export default AdminDashboard;
 
-import React from "react";
+import React, { useState } from "react";
 import "./admindashboard.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBuilding, faUsers } from "@fortawesome/free-solid-svg-icons";
 import { CircularProgressbar, buildStyles } from "react-circular-progressbar";
 import "react-circular-progressbar/dist/styles.css";
-import "react-circular-progressbar/dist/styles.css";
-import { BarChart, Bar, XAxis, YAxis, Tooltip, Legend, CartesianGrid, ResponsiveContainer, PieChart, Pie, Cell } from "recharts";
+import { BarChart, Bar, LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, Legend, PieChart, Pie, Cell, CartesianGrid } from "recharts";
 
 const AdminDashboard = () => {
   // Local data array for clients and users
@@ -283,6 +282,78 @@ const AdminDashboard = () => {
     { id: 4, client: "Emily Brown", date: "2024-02-13", plan: "Premium", price: "$49.99", status: "Renewed" },
   ];
 
+  const systemUsageData = {
+    totalTenants: 50,
+    activeTenants: 40,
+    inactiveTenants: 10,
+    apiCallsToday: 12000,
+    storageUsed: "750GB / 1TB",
+    topUsedModule: "Billing",
+    apiTrends: [
+      { day: "Mon", calls: 4000 },
+      { day: "Tue", calls: 6000 },
+      { day: "Wed", calls: 7000 },
+      { day: "Thu", calls: 8000 },
+      { day: "Fri", calls: 5000 },
+      { day: "Sat", calls: 3000 },
+      { day: "Sun", calls: 4500 },
+    ],
+    storageConsumption: [
+      { tenant: "Tenant A", usage: 120 },
+      { tenant: "Tenant B", usage: 180 },
+      { tenant: "Tenant C", usage: 90 },
+      { tenant: "Tenant D", usage: 240 },
+      { tenant: "Tenant E", usage: 160 },
+    ],
+    mostUsedModules: [
+      { module: "Billing", percentage: 35 },
+      { module: "User Management", percentage: 25 },
+      { module: "Reports", percentage: 20 },
+      { module: "Notifications", percentage: 15 },
+      { module: "Support", percentage: 5 },
+    ],
+    tenantList: [
+      { id: 1, name: "Alpha Inc.", status: "Active", apiCalls: 3000, storage: "120GB", topModule: "Billing" },
+      { id: 2, name: "Beta Corp.", status: "Active", apiCalls: 2500, storage: "90GB", topModule: "Reports" },
+      { id: 3, name: "Gamma LLC", status: "Inactive", apiCalls: 1200, storage: "60GB", topModule: "User Management" },
+      { id: 4, name: "Delta Ltd.", status: "Active", apiCalls: 4000, storage: "180GB", topModule: "Notifications" },
+    ]
+  };
+
+
+  const [issues, setIssues] = useState([
+    {
+      id: 101,
+      client: "Alpha Inc.",
+      type: "API Failure",
+      priority: "🔴 Critical",
+      status: "Open",
+      assignedTo: "John Doe",
+      reportedDate: "2025-02-13",
+      expectedResolution: "2025-02-15",
+    },
+    {
+      id: 102,
+      client: "Beta Corp.",
+      type: "Login Issue",
+      priority: "🟠 High",
+      status: "In Progress",
+      assignedTo: "Jane Smith",
+      reportedDate: "2025-02-12",
+      expectedResolution: "2025-02-14",
+    },
+    {
+      id: 103,
+      client: "Gamma LLC",
+      type: "Slow Performance",
+      priority: "🟡 Medium",
+      status: "Pending",
+      assignedTo: "Michael Lee",
+      reportedDate: "2025-02-10",
+      expectedResolution: "2025-02-16",
+    },
+  ]);
+
   return (
     <div className="dashboard">
       {/* Client and User Data Blocks */}
@@ -303,7 +374,7 @@ const AdminDashboard = () => {
       <div className="revenue-subCancel">
         <div className="revenue-chart">
           <h3>Monthly Revenue</h3>
-          <div className="chart-container">
+          <div className="revenue-container">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={revenueData}>
                 <XAxis dataKey="month" className="axis-label" />
@@ -359,7 +430,7 @@ const AdminDashboard = () => {
           <hr style={{ "marginBottom": "0" }} />
           <div>
             {transactions.map((transaction, idx) => (
-              <>
+              <div key={transaction.id} className="transaction-item">
                 <div className="recent-transaction">
                   <p>{transaction.id}</p>
                   <div className="trans-name-date">
@@ -371,8 +442,10 @@ const AdminDashboard = () => {
                     <p>{transaction.price}</p>
                   </div>
                 </div>
-              </>
+                {idx !== transactions.length - 1 && <hr />}
+              </div>
             ))}
+
           </div>
         </div>
       </div>
@@ -392,6 +465,137 @@ const AdminDashboard = () => {
             <span className={`status-badge ${sub.status.toLowerCase()}`}>{sub.status}</span>
           </div>
         ))}
+      </div>
+      <div className="analytics-container">
+        {/* KPI Cards */}
+        <div className="kpi-cards">
+          <div className="kpi-card">
+            <h4>Impressions</h4>
+            <p>{systemUsageData.totalTenants}</p>
+          </div>
+          <div className="kpi-card">
+            <h4>Active Tenants</h4>
+            <p>{systemUsageData.activeTenants} / {systemUsageData.totalTenants}</p>
+          </div>
+          <div className="kpi-card">
+            <h4>API Calls Today</h4>
+            <p>{systemUsageData.apiCallsToday}</p>
+          </div>
+          <div className="kpi-card">
+            <h4>Storage Used</h4>
+            <p>{systemUsageData.storageUsed}</p>
+          </div>
+        </div>
+
+        <div className="api-store">
+          <div className="api-container">
+            <h3>API Calls Trend</h3>
+            <ResponsiveContainer width="100%" height={250}>
+              <LineChart data={systemUsageData.apiTrends}>
+                <XAxis dataKey="day" />
+                <YAxis />
+                <Tooltip />
+                <Legend />
+                <Line type="monotone" dataKey="calls" stroke="#8884d8" />
+              </LineChart>
+            </ResponsiveContainer>
+          </div>
+
+          {/* Storage Consumption Chart */}
+          <div className="api-container">
+            <h3>Storage Consumption</h3>
+            <ResponsiveContainer width="100%" height={250}>
+              <BarChart data={systemUsageData.storageConsumption}>
+                <XAxis dataKey="tenant" />
+                <YAxis />
+                <Tooltip />
+                <Bar dataKey="usage" fill="#82ca9d" />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
+
+        {/* <div className="activeTable-modules">
+          <div className="chart-container">
+            <h3>Most Used Modules</h3>
+            <ResponsiveContainer width="100%" height={250}>
+              <PieChart>
+                <Pie data={systemUsageData.mostUsedModules} dataKey="percentage" nameKey="module" cx="50%" cy="50%" outerRadius={80} label>
+                  {systemUsageData.mostUsedModules.map((entry, index) => (
+                    <Cell key={`cell-${index}`} fill={["#4CAF50", "#2196F3", "#FFC107", "#E91E63", "#9C27B0"][index]} />
+                  ))}
+                </Pie>
+                <Tooltip />
+              </PieChart>
+            </ResponsiveContainer>
+          </div>
+
+       
+          <div className="tenant-table">
+            <table>
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Name</th>
+                  <th>Status</th>
+                  <th>API Calls</th>
+                  <th>Storage</th>
+                  <th>Top Module</th>
+                </tr>
+              </thead>
+              <tbody>
+                {systemUsageData.tenantList.map((tenant) => (
+                  <tr key={tenant.id}>
+                    <td>{tenant.id}</td>
+                    <td>{tenant.name}</td>
+                    <td className={tenant.status === "Active" ? "active-status" : "inactive-status"}>{tenant.status}</td>
+                    <td>{tenant.apiCalls}</td>
+                    <td>{tenant.storage}</td>
+                    <td>{tenant.topModule}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div> */}
+        <div className="issue-container">
+          <div className="issue-button-head">
+            <h2>Client Issue Tracker</h2>
+            <button>View All</button>
+          </div>
+          <div className="issuetable-container">
+            <table className="issue-table">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Client</th>
+                  <th>Issue Type</th>
+                  <th>Priority</th>
+                  <th>Status</th>
+                  <th>Assigned To</th>
+                  <th>Reported Date</th>
+                  <th>Expected Resolution</th>
+                </tr>
+              </thead>
+              <tbody>
+                {issues.map((issue) => (
+                  <tr key={issue.id} className={`priority-${issue.priority.toLowerCase()} status-${issue.status.toLowerCase().replace(" ", "-")}`}>
+                    <td>{issue.id}</td>
+                    <td>{issue.client}</td>
+                    <td>{issue.type}</td>
+                    <td className={`priority-${issue.priority.toLowerCase()}`}>{issue.priority}</td>
+                    <td className={`status-${issue.status.toLowerCase().replace(" ", "-")}`}>
+                      {issue.status}
+                    </td>
+                    <td>{issue.assignedTo}</td>
+                    <td>{issue.reportedDate}</td>
+                    <td>{issue.expectedResolution}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
       </div>
     </div>
   );

@@ -4,7 +4,6 @@ import "./client.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faCloudArrowDown,
-  faFileInvoiceDollar,
   faMagnifyingGlass,
   faPen,
   faPlus,
@@ -34,10 +33,9 @@ const Client = () => {
       try {
         const response = await axios.get(`${apiUrl}/api/clients/clientData`);
         setClients(response.data);
-        console.log("Admin client list", response.data);
+        console.log("Client list", response.data);
       } catch (error) {
-        console.error(error);
-        console.warn("Data not found", error);
+        console.error("Error fetching data:", error);
       }
     };
     fetchClients();
@@ -46,9 +44,14 @@ const Client = () => {
   const handleExport = () => {
     const exportData = clients.map((client) => ({
       Sno: client._id,
-      Name: client.name,
+      FullName: client.fullName,
+      Email: client.email,
+      Phone: client.phone,
+      Company: client.companyName,
+      Website: client.companyWebsite,
+      Industry: client.industryType,
+      Plan: client.selectedPlan,
       Status: client.status,
-      Role: client.role,
       CreatedAt: client.createdAt,
     }));
 
@@ -69,22 +72,20 @@ const Client = () => {
     }
   };
 
-  const filteredClients = clients.filter((client) =>
-    client.name.toLowerCase().includes(searchTerm.toLowerCase())
+  const filteredClients = clients.filter(
+    (client) =>
+      client.fullName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      client.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      client.phone.includes(searchTerm) ||
+      client.companyName.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   const pageCount = Math.ceil(filteredClients.length / itemsPerPage);
   const offset = currentPage * itemsPerPage;
-
   const currentItems = filteredClients.slice(offset, offset + itemsPerPage);
 
   const handlePageClick = ({ selected }) => {
     setCurrentPage(selected);
-  };
-
-  const handleItemsPerPageChange = (size) => {
-    setItemsPerPage(size); // Update items per page
-    setCurrentPage(0); // Reset to the first page
   };
 
   return (
@@ -112,14 +113,11 @@ const Client = () => {
             <div className="input-with-icon">
               <input
                 type="text"
-                placeholder="Search"
+                placeholder="Search by Name, Email, Phone, or Company"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
-              <FontAwesomeIcon
-                icon={faMagnifyingGlass}
-                className="input-icon"
-              />
+              <FontAwesomeIcon icon={faMagnifyingGlass} className="input-icon" />
             </div>
           </div>
         </form>
@@ -127,9 +125,14 @@ const Client = () => {
           <thead>
             <tr>
               <th>Sno.</th>
-              <th>Name</th>
+              <th>Full Name</th>
+              <th>Email</th>
+              <th>Phone</th>
+              <th>Company</th>
+              <th>Website</th>
+              <th>Industry</th>
+              <th>Plan</th>
               <th>Status</th>
-              <th>Role</th>
               <th>Created At</th>
               <th>Action</th>
             </tr>
@@ -138,15 +141,21 @@ const Client = () => {
             {currentItems.map((client, index) => (
               <tr key={client._id}>
                 <td>{offset + index + 1}</td>
-                <td>{client.name}</td>
+                <td>{client.fullName}</td>
+                <td>{client.email}</td>
+                <td>{client.phone}</td>
+                <td>{client.companyName}</td>
+                <td>
+                  <a href={client.companyWebsite} target="_blank" rel="noopener noreferrer">
+                    {client.companyWebsite}
+                  </a>
+                </td>
+                <td>{client.industryType}</td>
+                <td>{client.selectedPlan}</td>
                 <td>{client.status}</td>
-                <td>{client.role}</td>
                 <td>{new Date(client.createdAt).toLocaleDateString()}</td>
                 <td>
                   <div className="pen-trash">
-                    <Link to={`/subscriptions/${client._id}`}>
-                      <FontAwesomeIcon icon={faFileInvoiceDollar} />
-                    </Link>
                     <Link to={`/clients/edit/${client._id}`}>
                       <FontAwesomeIcon icon={faPen} />
                     </Link>
@@ -186,10 +195,7 @@ const Client = () => {
               </Dropdown.Toggle>
               <Dropdown.Menu>
                 {[5, 10, 15, 20, 50].map((size) => (
-                  <Dropdown.Item
-                    key={size}
-                    onClick={() => handleItemsPerPageChange(size)}
-                  >
+                  <Dropdown.Item key={size} onClick={() => setItemsPerPage(size)}>
                     {size} items
                   </Dropdown.Item>
                 ))}

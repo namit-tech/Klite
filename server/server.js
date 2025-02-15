@@ -3,21 +3,24 @@ const express = require("express");
 const cors = require("cors");
 const mongoose = require("mongoose");
 const http = require("http");
-const { Server } = require("socket.io");
+// const { Server } = require("socket.io");
 
-const adminRoutes = require("./routes/adminRoutes");
-const clientRoutes = require("./routes/clientRoute");
+// Import Routes
+const adminRoutes = require("./routes/Admin/adminRoutes");
+const clientRoutes = require("./routes/clients/clientRoute");
 const userRoutes = require("./routes/userRoute");
 const paymentRoutes = require("./routes/googleRoute");
 const DashboardRoutes = require("./routes/DashboardRoute");
-const LeadRoutes = require("./routes/leadsRoute");
+// const LeadRoutes = require("./routes/leadsRoute");
 const WebHookRoutes = require("./routes/webhookRoutes");
+const SubscriptionRoutes = require("../server/routes/Admin/subscriptionRoute");
+const UserSubscriptionRoutes = require("../server/routes/clients/UserSubscriptionRoute");
 
-const app = express();  // Define app before creating server
+const { Collection1, Collection2 } = require("./database/db"); // Import Models
+
+const app = express();
 const server = http.createServer(app);
-const io = new Server(server, {
-  cors: { origin: "*" },
-});
+// const io = new Server(server, { cors: { origin: "*" } });
 
 // Middleware
 app.use(cors());
@@ -29,17 +32,14 @@ app.use("/api/clients", clientRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/auth", paymentRoutes);
 app.use("/api", DashboardRoutes);
-app.use("/api", LeadRoutes);
+// app.use("/api", LeadRoutes);
 app.use("/", WebHookRoutes);
+app.use("/api", SubscriptionRoutes);
+app.use("/api", UserSubscriptionRoutes);
 
-const mongoUri = process.env.MONGO_URI;
-mongoose.connect(mongoUri)
-  .then(() => console.log("Database connected"))
-  .catch((err) => console.log("Database connection error:", err));
-
-// Start server
 const PORT = process.env.PORT || 5000;
 server.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+
 
 
 

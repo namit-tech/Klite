@@ -3,7 +3,7 @@ import io from "socket.io-client";
 import axios from "axios";
 import "./chatbox.css";
 
-const socket = io("http://localhost:5000");
+// const socket = io("http://localhost:5000");
 
 const ChatBox = () => {
   const [messages, setMessages] = useState([]);
@@ -14,13 +14,13 @@ const ChatBox = () => {
     { id: 2, name: "Bob", phone: "+1987654321" },
   ]);
 
-  useEffect(() => {
-    socket.on("newMessage", (message) => {
-      setMessages((prevMessages) => [...prevMessages, message]);
-    });
+  // useEffect(() => {
+  //   socket.on("newMessage", (message) => {
+  //     setMessages((prevMessages) => [...prevMessages, message]);
+  //   });
 
-    return () => socket.off("newMessage");
-  }, []);
+  //   return () => socket.off("newMessage");
+  // }, []);
 
   const sendMessage = async () => {
     if (!newMessage.trim() || !selectedChat) return;

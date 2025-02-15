@@ -17,6 +17,11 @@ import CreateContact from "./component/Admin/CRM/Contacts/create/CreateContact";
 import Leads from "./component/Admin/CRM/leads/list/Leads";
 import Landing from "./component/landingPage/Landing";
 import ChatBox from "./component/Admin/Chats/ChatBox";
+import Billings from "./component/Admin/billings/Billings";
+import SystemAnalytics from "./component/Admin/SystemAnalytics/SystemAnalytics";
+import SupportTickets from "./component/Admin/Tickets/SupportTicket";
+import Security from "./component/Admin/Security/Security";
+import Performance from "./component/Admin/Performance/Performance";
 
 const App = () => {
   return (
@@ -25,7 +30,12 @@ const App = () => {
         <Route path="/" element={<PanelLogin />} />
         <Route path="/landing" element={<Landing />} />
         <Route path="/dashboard" element={<Dashboard />} />
-        <Route path="/subscriptions/:id" element={<Subscription />} />
+        <Route path="/subscriptions" element={<Subscription />} />
+        <Route path="/billings" element={<Billings />} />
+        <Route path="/systemanalytics" element={<SystemAnalytics />} />
+        <Route path="/supporttickets" element={<SupportTickets />} />
+        <Route path="/security" element={<Security />} />
+        <Route path="/performance" element={<Performance />} />
         <Route path="/clients" element={<Client />} />
         <Route path="/users" element={<User />} />
         <Route path="/clients/edit/:id" element={<Clientedit />} />

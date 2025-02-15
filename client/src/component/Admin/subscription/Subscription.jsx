@@ -1,71 +1,74 @@
 import React, { useEffect, useState } from "react";
-import "./subscription.css"; // import custom styles
-import {
-  FaCheckCircle,
-  FaRegClock,
-  FaUsers,
-  FaShieldAlt,
-} from "react-icons/fa"; // Adding icons
-import axios from "axios"; // Importing axios for API calls
+import "./subscription.css";
+import { FaCheckCircle, FaRegClock, FaUsers, FaShieldAlt } from "react-icons/fa";
+import axios from "axios";
 import Sidebar from "../../Sidebar/Sidebar";
 import Navbar from "../../Navbar/Navbar";
 import { useParams } from "react-router-dom";
+
 const apiUrl = "http://localhost:5000";
 
-const Subscription = () => {
-  const [loading, setLoading] = useState(false); // To handle loading state during payment
-  const { id } = useParams(); // Get client ID from URL params
-  const [client, setClient] = useState(null); // Store client details (initialized to null)
+const iconMap = {
+  "check-circle": <FaCheckCircle />,
+  "clock": <FaRegClock />,
+  "users": <FaUsers />,
+  "shield-alt": <FaShieldAlt />,
+};
 
+const Subscription = () => {
+  const [loading, setLoading] = useState(false);
+  const { id } = useParams();
+  const [client, setClient] = useState(null);
   const role = localStorage.getItem("role");
   const [customPermissions, setCustomPermissions] = useState(() => {
     const storedPermissions = localStorage.getItem("permissions");
     return storedPermissions ? JSON.parse(storedPermissions) : {};
   });
 
-  const plans = [
-    {
-      name: "Pro Plan",
-      price: "$99/year",
-      duration: "Yearly",
-      amount: 9900, // amount in paisa (not used in this demo)
-      features: [
-        { icon: <FaCheckCircle />, text: "Access to all features" },
-        { icon: <FaRegClock />, text: "50 GB of storage" },
-        { icon: <FaUsers />, text: "24/7 premium support" },
-        { icon: <FaShieldAlt />, text: "Advanced security" },
-      ],
-    },
-  ];
+  const [plans, setPlans] = useState([]);
+  console.log("plans", plans);
+
+
+  useEffect(() => {
+    const fetchPlans = async () => {
+      try {
+        const res = await axios.get(`${apiUrl}/api/subscription`);
+        console.log("response sub", res.data);
+        setPlans(res.data);
+
+      } catch (error) {
+        console.error("Error fetching subscription plans:", error);
+      }
+    };
+
+    fetchPlans();
+  }, []);
 
   useEffect(() => {
     const fetchClientDetails = async () => {
       try {
         const res = await axios.get(`${apiUrl}/api/clients/${id}`);
-        setClient(res.data); // Store fetched client details in the state
+        setClient(res.data);
       } catch (error) {
         console.error("Error fetching client details:", error);
       }
     };
 
     if (id) {
-      fetchClientDetails(); // Fetch client data only if the id exists
+      fetchClientDetails();
     }
-  }, [id]); // Depend on the `id` to refetch if it changes
+  }, [id]);
 
   const handlePayment = async (plan) => {
     try {
-      setLoading(true); // Set loading state to true while payment is being processed
-
-      // Simulate a successful payment (as if payment is successful)
+      setLoading(true);
       setTimeout(() => {
-        alert("Payment successful!");
+        alert(`Payment successful for ${plan.name}!`);
+        setLoading(false);
       }, 2000);
-
-      setLoading(false); // Set loading state to false once payment process is completed
     } catch (error) {
       console.error("Payment Error:", error);
-      setLoading(false); // Set loading state to false in case of error
+      setLoading(false);
       alert("Payment failed, please try again");
     }
   };
@@ -84,14 +87,14 @@ const Subscription = () => {
               <ul className="plan-features">
                 {plan.features.map((feature, idx) => (
                   <li key={idx} className="feature-item">
-                    <span className="feature-icon">{feature.icon}</span>
+                    <span className="feature-icon">{iconMap[feature.icon] || <FaCheckCircle />}</span>
                     <span>{feature.text}</span>
                   </li>
                 ))}
               </ul>
               <button
                 className="subscribe-btn"
-                onClick={() => handlePayment(plan)} // Trigger payment on click
+                onClick={() => handlePayment(plan)}
                 disabled={loading}
               >
                 {loading ? "Processing..." : "Subscribe Now"}
@@ -104,10 +107,10 @@ const Subscription = () => {
           <table className="styled-table-sub">
             <thead>
               <tr>
-                <th>Sno.</th>
                 <th>Name</th>
                 <th>Status</th>
                 <th>Role</th>
+                <th>Joined Date</th>
               </tr>
             </thead>
             <tbody>
@@ -126,4 +129,3 @@ const Subscription = () => {
 };
 
 export default Subscription;
-

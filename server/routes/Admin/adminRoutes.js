@@ -68,13 +68,13 @@
 //   console.log("Generated OTP secret:", secret); // Log the generated secret
 
 //   admin.otpSecret = secret.base32; // Save the new OTP secret to the database
-  
+
 //   const qr = await qrCode.toDataURL(secret.otpauth_url); // Generate QR code for OTP secret
 //   console.log("Generated QR code URL:", qr); // Log the generated QR code URL
-  
+
 //   await admin.save(); // Save the admin document with the new OTP secret
 //   console.log("Admin saved with new OTP secret"); // Log after saving the admin
-  
+
 //   res.json({ qrCode: qr, secret: secret.base32 }); // Send the QR code and the secret back to the client
 // });
 
@@ -181,13 +181,13 @@
 const express = require("express");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
-const Admin = require("../models/admin-model");
+const Admin = require("../../models/Admin/admin-model");
 const dotenv = require("dotenv");
 dotenv.config();
 const router = express.Router();
-const Client = require("../models/client-modal");
-const User = require("../models/User-model");
-const  verifyToken  = require("../middlewares/auth");
+const Client = require("../../models/clients/client-modal");
+const User = require("../../models/User-model");
+const verifyToken = require("../../middlewares/auth");
 
 // Register Route
 router.post("/register", async (req, res) => {
