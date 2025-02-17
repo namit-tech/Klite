@@ -1,5 +1,7 @@
 const mongoose = require("mongoose");
 const { db2 } = require("../../database/db");
+const { db1 } = require("../../database/db");
+const Subscription = require("../Admin/Subscription")
 
 const clientSchema = new mongoose.Schema(
   {
@@ -21,13 +23,18 @@ const clientSchema = new mongoose.Schema(
     companyWebsite: { type: String },
     industryType: { type: String },
     selectedPlan: { type: String, required: true },
+    selectedPlanId: {
+      type: mongoose.Schema.Types.ObjectId, // Reference to Subscription model
+      ref: "Subscription", // Ensure this points to the Subscription model
+      required: true
+    },
     password: {
       type: String,
       required: true,
       minlength: 6
     },
     status: { type: String, enum: ["Active", "Inactive"], default: "Active" },
-    role: { type: String, default: "User" }, // Default role set
+    role: { type: String, default: "client" },
     createdAt: { type: Date, default: Date.now },
   },
   { timestamps: true }

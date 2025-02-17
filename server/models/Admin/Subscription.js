@@ -3,7 +3,7 @@ const { db1 } = require("../../database/db");
 
 const subscriptionPlanSchema = new mongoose.Schema({
   name: { type: String, required: true },
-  price: { type: String, required: true }, // Keeping price as a string to handle "Free"
+  price: { type: Number, required: true }, // Keeping price as a string to handle "Free"
   duration: { type: String, required: true }, // Example: "7 Days", "Yearly"
   features: [
     {

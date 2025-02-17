@@ -63,6 +63,7 @@ const Landing = () => {
                     await axios.post(`${apiUrl}/api/clients/register`, {
                         ...formData,
                         selectedPlan: selectedPlan.name,
+                        selectedPlanId: selectedPlan._id, 
                         password,
                     });
 

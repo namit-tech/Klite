@@ -1,7 +1,7 @@
 [
     {
       "name": "Trial Plan",
-      "price": "Free",
+      "price": 0,
       "duration": "7 Days",
       "features": [
         { "icon": "check-circle", "text": "Limited features" },
@@ -11,7 +11,7 @@
     },
     {
       "name": "Basic Plan",
-      "price": "$49/year",
+      "price": 4900,
       "duration": "Yearly",
       "features": [
         { "icon": "check-circle", "text": "Access to basic features" },
@@ -21,7 +21,7 @@
     },
     {
       "name": "Premium Plan",
-      "price": "$99/year",
+      "price": 5900,
       "duration": "Yearly",
       "features": [
         { "icon": "check-circle", "text": "Access to all features" },

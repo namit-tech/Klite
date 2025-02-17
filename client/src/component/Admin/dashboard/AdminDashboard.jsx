@@ -227,38 +227,86 @@
 
 // export default AdminDashboard;
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./admindashboard.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBuilding, faUsers } from "@fortawesome/free-solid-svg-icons";
 import { CircularProgressbar, buildStyles } from "react-circular-progressbar";
 import "react-circular-progressbar/dist/styles.css";
 import { BarChart, Bar, LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, Legend, PieChart, Pie, Cell, CartesianGrid } from "recharts";
+import axios from "axios";
 
 const AdminDashboard = () => {
-  // Local data array for clients and users
-  const data = [
-    { label: "Total Clients", value: 500, icon: faBuilding },
-    { label: "Active Clients", value: 350, icon: faBuilding },
-    { label: "Total Users", value: 1000, icon: faUsers },
-    { label: "Active Users", value: 750, icon: faUsers },
-  ];
 
-  // Revenue data for bar chart
-  const revenueData = [
-    { month: "Jan", revenue: 5000 },
-    { month: "Feb", revenue: 7000 },
-    { month: "Mar", revenue: 8000 },
-    { month: "Apr", revenue: 6500 },
-    { month: "May", revenue: 9000 },
+  const [totalClients, setTotalClients] = useState(0);
+  const [totalUsers, setTotalUsers] = useState(0);
+  const [activeClients, setActiveClients] = useState(0);
+  const [activeUsers, setActiveUsers] = useState(0);
+  const [revenueData, setRevenueData] = useState([]); // State to store monthly revenue data
+  console.log("revenuedata", revenueData);
+
+
+  useEffect(() => {
+    // Fetch total clients and active clients data from the backend
+    const fetchData = async () => {
+      try {
+        const response = await axios.get("http://localhost:5000/api/clients/total-clients");
+        setTotalClients(response.data.totalClients);
+        setActiveClients(response.data.activeClients);
+      } catch (error) {
+        console.error("Error fetching total clients:", error);
+      }
+    };
+
+    // Fetch monthly revenue data from the backend
+    const fetchRevenueData = async () => {
+      try {
+        const response = await axios.get("http://localhost:5000/api/clients/monthlyrevenue");
+        console.log("Raw revenue data:", response.data);
+
+        // Get the current year dynamically
+        const currentYear = new Date().getFullYear();
+
+        // Define all months for the current year
+        const allMonths = Array.from({ length: 12 }, (_, index) => {
+          const date = new Date(currentYear, index, 1); // Set month and year
+          return date.toLocaleString("default", { month: "short", year: "numeric" });
+        });
+
+        // Filter out only data for the current year
+        const rawRevenueData = response.data.revenueData || {};
+        const formattedData = allMonths
+          .filter((month) => month.includes(currentYear)) // Only keep current year data
+          .map((month) => ({
+            month,
+            revenue: rawRevenueData[month] || 0, // Use 0 if no revenue data
+          }));
+
+        console.log("Formatted revenue data for the current year:", formattedData);
+        setRevenueData(formattedData);
+      } catch (error) {
+        console.error("Error fetching revenue data:", error);
+      }
+    };
+
+
+    fetchData();
+    fetchRevenueData();
+  }, []);
+
+  const data = [
+    { label: "Total Clients", value: totalClients, icon: faBuilding },
+    { label: "Active Clients", value: activeClients, icon: faBuilding },
+    { label: "Total Users", value: totalUsers, icon: faUsers },
+    { label: "Active Users", value: activeUsers, icon: faUsers },
   ];
 
   const subscriptionData = [
-    { month: "Jan", newSubs: 500, cancellations: 200 },
-    { month: "Feb", newSubs: 700, cancellations: 300 },
-    { month: "Mar", newSubs: 800, cancellations: 250 },
-    { month: "Apr", newSubs: 650, cancellations: 400 },
-    { month: "May", newSubs: 900, cancellations: 350 },
+    { month: "Jan", newSubs: 500, refund: 200 },
+    { month: "Feb", newSubs: 700, refund: 300 },
+    { month: "Mar", newSubs: 800, refund: 250 },
+    { month: "Apr", newSubs: 650, refund: 400 },
+    { month: "May", newSubs: 900, refund: 350 },
   ];
 
   const subscriptionDataBar = [
@@ -363,7 +411,7 @@ const AdminDashboard = () => {
             <FontAwesomeIcon icon={item.icon} className="icon-client" />
             <h3>{item.label}</h3>
             <div className="bar-progress">
-              <h5>{((item.value / (data[0].value || 1)) * 100).toFixed(1)}%</h5>
+              <h5>{((item.value / (data[0].value || 1))).toFixed(1)}%</h5>
               <p>{item.value}</p>
             </div>
           </div>
@@ -386,7 +434,7 @@ const AdminDashboard = () => {
           </div>
         </div>
         <div className="subscription-chart">
-          <h3>New Subscriptions vs Cancellations</h3>
+          <h3>New Subscriptions vs refund</h3>
           <ResponsiveContainer width="100%" height={300}>
             <BarChart data={subscriptionData}>
               <CartesianGrid strokeDasharray="3 3" />
@@ -395,7 +443,7 @@ const AdminDashboard = () => {
               <Tooltip />
               <Legend />
               <Bar dataKey="newSubs" fill="#4CAF50" name="New Subscriptions" barSize={50} />
-              <Bar dataKey="cancellations" fill="#F44336" name="Cancellations" barSize={50} />
+              <Bar dataKey="refund " fill="#F44336" name="refund" barSize={50} />
             </BarChart>
           </ResponsiveContainer>
         </div>
